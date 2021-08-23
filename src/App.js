@@ -1,5 +1,5 @@
 import './App.css';
-import { RouterConfig } from './navigation/navigation'
+import { RouterConfig } from './navigation/navigation';
 
 function App() {
   return (
