@@ -1,5 +1,5 @@
 import React from 'react';
-import { auth, googleAuthProvider } from '../lib/firebase';
+import { auth, firestore, googleAuthProvider } from '../lib/firebase';
 import { useHistory, Link } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
@@ -21,8 +21,15 @@ function Home() {
 
 const SignInButton = () => {
     const history = useHistory();
+
     const signInWithGoogle = async () => {
-        await auth.signInWithPopup(googleAuthProvider);
+        const res = await auth.signInWithPopup(googleAuthProvider);
+        const user = res.user;
+        await firestore.collection('users').doc(user.uid).set({
+            displayName : user.displayName,
+            photoURL : user.photoURL,
+        }, {merge: true});
+        await firestore.collection('users').doc(user.uid).collection("posts").doc();
         history.push("/feed");
     }
 

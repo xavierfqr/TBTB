@@ -19,8 +19,8 @@ export const RouterConfig = () => {
         <Router>
             <Switch>
                 <Route exact path={"/"} component={Home}/>
-                <PrivateRoute path={"/profile"} component={Profile}/>
                 <PrivateRoute path={"/feed"} component={Feed}/>
+                <PrivateRoute path={"/profile/:id"} component={Profile}/>
                 <Route path="*" render={() => <Redirect to="/"/>}></Route>
             </Switch>
         </Router>

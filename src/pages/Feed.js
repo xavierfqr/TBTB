@@ -6,6 +6,8 @@ function Feed() {
         <div>
             Feed !
             <SignOutButton/>
+            <button>Add Post</button>
+            
         </div>
     )
 }
