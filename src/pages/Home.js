@@ -30,6 +30,10 @@ const SignInButton = () => {
             photoURL : user.photoURL,
         }, {merge: true});
         await firestore.collection('users').doc(user.uid).collection("posts").doc();
+        await firestore.collection('usernames').doc(user.displayName).set({
+            user : user.uid
+        })
+
         history.push("/feed");
     }
 

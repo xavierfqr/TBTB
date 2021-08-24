@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Redirect, Link } from 'react-router-dom';
 import { SignOutButton } from './Home';
+import { UserContext } from '../lib/context';
+
 
 function Feed() {
+    const {user, username} = useContext(UserContext);
+
     return (
-        <div>
+        user && <div>
             Feed !
             <SignOutButton/>
-            <button>Add Post</button>
-            
+            <Link to={`profile/${user.displayName}`}>
+                <img src={user.photoURL}/>
+            </Link>
         </div>
     )
 }
