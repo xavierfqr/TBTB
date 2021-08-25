@@ -1,10 +1,18 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+//import { useParams } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { storage, firestore, auth } from '../lib/firebase';
-import { UserContext } from '../lib/context';
 import ReactAudioPlayer from 'react-audio-player';
 import audiomp3 from './song1.mp3';
+import Loader from '../components/Loader';
+import toast, {Toaster} from 'react-hot-toast';
+
+
+const LoadingValues = {
+    EMPTY : -1,
+    LOADING : 0,
+    LOADED : 1,
+}
 
 
 function Profile() {
@@ -13,8 +21,9 @@ function Profile() {
     const [title, setTitle] = useState('');
     const [fileURL, setFileURL] = useState(null);
     const [posts, setPosts] = useState([]);
-    const [isLoaded, setIsLoaded] = useState(false);
-
+    const [uploadingState, setUploadingState] = useState(LoadingValues.EMPTY);
+    const [isLoading, setIsLoading] = useState(false);
+    
     console.log(fileURL)
 
     const onTitleChange = (e) => {
@@ -23,18 +32,15 @@ function Profile() {
     }
 
     const onFileChange = async (e) => {
+        setUploadingState(LoadingValues.LOADING)
         console.log("Files : ", e.target.files)
         console.log(new Date());
         const file = e.target.files[0];
-        console.log("1")
         const storageRef = await storage.ref();
-        console.log("2")
         const fileRef = await storageRef.child(file.name + `$${new Date()}`);
-        console.log("3")
         await fileRef.put(file);
-        console.log("4")
         await setFileURL(await fileRef.getDownloadURL());
-        setIsLoaded(true)
+        setUploadingState(LoadingValues.LOADED);
     }
 
     const onSubmit = async (e) => {
@@ -45,46 +51,48 @@ function Profile() {
             audioFile : fileURL
         })
         await fetchData();
-        setIsLoaded(false);
+        toast.success("Post Created !");
+        setUploadingState(LoadingValues.EMPTY);
     }
 
     async function fetchData() {
+        setIsLoading(true);
         const postsCollection = await firestore.collection('users').doc(user.uid).collection('posts').get();
         setPosts(postsCollection.docs.map(doc => doc.data()));
+        setIsLoading(false);
     }
 
     useEffect(() => {
-        fetchData();
+        fetchData()
     }, [])
 
     return (
         <>
+            <Toaster/>
             <form onSubmit={onSubmit}>
                 <input type="text" placeholder="title" onChange={onTitleChange} value={title}/>
                 <input type="file" onChange={onFileChange}/>
-                <button type="submit" disabled={!isLoaded}>Submit</button>
+                <button type="submit" disabled={uploadingState !== LoadingValues.LOADED}>Submit</button>
             </form>
-            <ReactAudioPlayer
-                src={audiomp3}
-                autoPlay={false}
-                controls
-            />
-            
+            <Loader show={uploadingState === LoadingValues.LOADING}/>
+
+            {isLoading ? 
+            <Loader show={isLoading}/>
+            :
             <ul>
                 {posts.map((post, index) => {
                     return (<li key={index}>
-                            <audio
+                            <ReactAudioPlayer
                                 controls
-                                src={post.audioFile}>
-                                    Your browser does not support the
-                                <code>audio</code> element.
-                            </audio>
+                                autoPlay={false}
+                                src={post.audioFile}/>
                                 {console.log('audioFile', post.audioFile)}
                            <p>{post.title}</p>
                         </li>
                     )
                 })}
             </ul>
+            }
         </>
     )
 }

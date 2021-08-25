@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { SignOutButton } from './Home';
 import { UserContext } from '../lib/context';
 
@@ -12,7 +12,7 @@ function Feed() {
             Feed !
             <SignOutButton/>
             <Link to={`profile/${user.displayName}`}>
-                <img src={user.photoURL}/>
+                <img src={user.photoURL} alt="profile"/>
             </Link>
         </div>
     )
