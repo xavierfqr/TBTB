@@ -10,9 +10,10 @@ import audiomp3 from './song1.mp3';
 function Profile() {
     //const { id } = useParams();
     const [user] = useAuthState(auth);
-    const [title, setTitle] = useState('')
+    const [title, setTitle] = useState('');
     const [fileURL, setFileURL] = useState(null);
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     console.log(fileURL)
 
@@ -23,15 +24,17 @@ function Profile() {
 
     const onFileChange = async (e) => {
         console.log("Files : ", e.target.files)
+        console.log(new Date());
         const file = e.target.files[0];
         console.log("1")
-        const storageRef = storage.ref();
+        const storageRef = await storage.ref();
         console.log("2")
-        const fileRef = storageRef.child(file.name);
+        const fileRef = await storageRef.child(file.name + `$${new Date()}`);
         console.log("3")
-        fileRef.put(file);
+        await fileRef.put(file);
         console.log("4")
-        setFileURL(await fileRef.getDownloadURL());
+        await setFileURL(await fileRef.getDownloadURL());
+        setIsLoaded(true)
     }
 
     const onSubmit = async (e) => {
@@ -42,6 +45,7 @@ function Profile() {
             audioFile : fileURL
         })
         await fetchData();
+        setIsLoaded(false);
     }
 
     async function fetchData() {
@@ -58,24 +62,23 @@ function Profile() {
             <form onSubmit={onSubmit}>
                 <input type="text" placeholder="title" onChange={onTitleChange} value={title}/>
                 <input type="file" onChange={onFileChange}/>
-                <button type="submit">Submit</button>
+                <button type="submit" disabled={!isLoaded}>Submit</button>
             </form>
             <ReactAudioPlayer
                 src={audiomp3}
-                autoPlay={true}
+                autoPlay={false}
                 controls
             />
             
             <ul>
                 {posts.map((post, index) => {
                     return (<li key={index}>
-                            
                             <audio
-                controls
-                src={post.audioFile}>
-                    Your browser does not support the
-                <code>audio</code> element.
-            </audio>
+                                controls
+                                src={post.audioFile}>
+                                    Your browser does not support the
+                                <code>audio</code> element.
+                            </audio>
                                 {console.log('audioFile', post.audioFile)}
                            <p>{post.title}</p>
                         </li>
