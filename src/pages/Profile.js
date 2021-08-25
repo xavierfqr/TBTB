@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-//import { useParams } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { storage, firestore, auth } from '../lib/firebase';
-import ReactAudioPlayer from 'react-audio-player';
-import audiomp3 from './song1.mp3';
+
 import Loader from '../components/Loader';
 import toast, {Toaster} from 'react-hot-toast';
+import Posts from '../components/Posts';
 
 
 const LoadingValues = {
@@ -16,15 +15,12 @@ const LoadingValues = {
 
 
 function Profile() {
-    //const { id } = useParams();
     const [user] = useAuthState(auth);
     const [title, setTitle] = useState('');
     const [fileURL, setFileURL] = useState(null);
     const [posts, setPosts] = useState([]);
     const [uploadingState, setUploadingState] = useState(LoadingValues.EMPTY);
     const [isLoading, setIsLoading] = useState(false);
-    
-    console.log(fileURL)
 
     const onTitleChange = (e) => {
         const text = e.target.value;
@@ -33,8 +29,6 @@ function Profile() {
 
     const onFileChange = async (e) => {
         setUploadingState(LoadingValues.LOADING)
-        console.log("Files : ", e.target.files)
-        console.log(new Date());
         const file = e.target.files[0];
         const storageRef = await storage.ref();
         const fileRef = await storageRef.child(file.name + `$${new Date()}`);
@@ -45,13 +39,19 @@ function Profile() {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        console.log("fileURL onSubmit : ", fileURL);
-        await firestore.collection('users').doc(user.uid).collection('posts').add({
+        try {  
+            await firestore.collection('users').doc(user.uid).collection('posts').add({
             title,
             audioFile : fileURL
-        })
-        await fetchData();
-        toast.success("Post Created !");
+            })
+            toast.success("Post Created !");
+        }
+        catch(e) {
+            toast.error("An error occurred while creating post :(");
+        }
+        finally {
+            await fetchData();
+        }
         setUploadingState(LoadingValues.EMPTY);
     }
 
@@ -78,20 +78,7 @@ function Profile() {
 
             {isLoading ? 
             <Loader show={isLoading}/>
-            :
-            <ul>
-                {posts.map((post, index) => {
-                    return (<li key={index}>
-                            <ReactAudioPlayer
-                                controls
-                                autoPlay={false}
-                                src={post.audioFile}/>
-                                {console.log('audioFile', post.audioFile)}
-                           <p>{post.title}</p>
-                        </li>
-                    )
-                })}
-            </ul>
+            : <Posts posts={posts}/>
             }
         </>
     )
