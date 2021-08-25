@@ -25,7 +25,8 @@ function Post({post}) {
             <p>{post.createdAt.toDate().toString()}</p>
             <p>{post.title}</p>
             <p>{post.heartCount}</p>
-            <Link to={{pathname: `/profile/${post.displayName}`, state: {isAdmin: post.displayName === auth.displayName}}}>{post.displayName}</Link>
+
+            <Link to={{pathname: `/profile/${post.displayName}`, state: {isAdmin: post.displayName === user.displayName}}}>{post.displayName}</Link>
         </div>
     )
 }
