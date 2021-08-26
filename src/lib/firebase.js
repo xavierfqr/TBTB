@@ -14,11 +14,16 @@ const firebaseConfig = {
     measurementId: "G-9JHR9L993W"
   };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length){
+  firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app()
+}
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 export const storage = firebase.storage();
 
+export const increment = firebase.firestore.FieldValue.increment;
 
 export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
