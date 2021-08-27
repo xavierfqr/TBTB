@@ -13,11 +13,15 @@ function Navbar() {
             <div className={styles.left}>
                 <img className={styles.img} src="penguin.png" alt="penguin"/>
                 <h1 className={styles.name}>ToBeTheBest</h1>
+                {user && <div className={styles.separator}></div>}
+                {user && <Link to={{pathname: `/feed`,
+                         state: {isAdmin: true}}}><h3><i>Feed</i></h3>
+                        </Link>}
             </div>
             {user && 
             <div className={styles.right}>
                 <SignOutButton className={styles.logOut}/>
-                <Link to={{pathname: `profile/${user.displayName}`,
+                <Link to={{pathname: `/profile/${user.displayName}`,
                             state: {isAdmin: true}}}>
                     <img className={styles.img} src={user.photoURL} alt="profile"/>
                 </Link>

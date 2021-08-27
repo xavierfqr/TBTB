@@ -1,3 +1,55 @@
-input {
+.content {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+}
+
+.formWrapper {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  padding: 5px;
+  color: white;
+  background: rgba(15, 192, 15, 0.589);
+  border-radius: 10px;
+}
+
+.form {
+  display: flex;
+}
+
+.formTitle {
+  padding: 10px;
+}
+
+.form > button {
+  margin-left: 30px;
+}
+
+.content input {
+  border: none;
   outline: none;
+}
+
+.loader {
+  margin-left: 30px;
+}
+
+.file {
+  display: none;
+}
+
+.addIcon {
+  cursor: pointer;
+  width: 50px;
+}
+
+.noCursor {
+  cursor: initial;
 }

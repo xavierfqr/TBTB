@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { storage, firestore, auth } from '../lib/firebase';
 import Loader from '../components/Loader';
 import toast, {Toaster} from 'react-hot-toast';
 import Posts from '../components/Posts';
-import './Profile.module.css';
+import styles from './Profile.module.css';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 
 const LoadingValues = {
@@ -61,6 +62,7 @@ function Profile(props) {
             setFileValue('')
             await fetchData();
         }
+        setTitle('');
         setUploadingState(LoadingValues.EMPTY);
     }
 
@@ -74,28 +76,37 @@ function Profile(props) {
         setIsLoading(false);
     }
 
+    const hiddenFileInput = useRef(null);
+
     useEffect(() => {
         fetchData();
     }, [])
 
     return (
-        <>
+        <div className={styles.content}>
             <Toaster/>
-            {isAdmin &&
-            <form onSubmit={onSubmit}>
-                <input type="text" placeholder="title" onChange={onTitleChange} value={title}/>
-                <input type="file" onChange={onFileChange} value={fileValue}/>
-                <button type="submit" disabled={uploadingState !== LoadingValues.LOADED}>Submit</button>
-            </form>
-            }
-
-            <Loader show={uploadingState === LoadingValues.LOADING}/>
-
-            {isLoading ? 
-            <Loader show={isLoading}/>
-            : <Posts posts={posts}/>
-            }
-        </>
+            <div className={styles.formWrapper}>
+                {isAdmin &&
+                <form className={styles.form} onSubmit={onSubmit}>
+                    <input className={styles.formTitle} type="text" placeholder="Title" onChange={onTitleChange} value={title}/>
+                    <input className={styles.file} type="file" onChange={onFileChange} value={fileValue} ref={hiddenFileInput}/>
+                    <div className={styles.addIcon} onClick={e => {hiddenFileInput.current.click()}}>
+                        <AddCircleIcon fontSize="large"/>
+                    </div>
+                    {uploadingState !== LoadingValues.LOADING ?
+                        <button type="submit" disabled={uploadingState !== LoadingValues.LOADED} className={uploadingState !== LoadingValues.LOADED ? styles.noCursor : styles.button}><h3>Submit</h3></button>
+                        :<div className={styles.loader}><Loader show={uploadingState === LoadingValues.LOADING}/></div>
+                    }
+                </form>
+                }
+            </div>
+            <main>
+                {isLoading ? 
+                <Loader show={isLoading}/>
+                : <Posts posts={posts}/>
+                }
+            </main>
+        </div>
     )
 }
 

@@ -60,8 +60,7 @@ function Feed() {
 
     return (
         user && <div>
-            <h1>Feed !</h1>
-            <Posts posts={posts}/>
+                <Posts posts={posts}/>
             <button onClick={loadMore}>Load More</button>
         </div>
     )
