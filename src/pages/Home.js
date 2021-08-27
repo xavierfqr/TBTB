@@ -2,7 +2,7 @@ import React from 'react';
 import { auth, firestore, googleAuthProvider } from '../lib/firebase';
 import { useHistory, Link } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
-
+import styles from './Home.module.css';
 
 function Home() {
     const [user] = useAuthState(auth);
@@ -10,8 +10,8 @@ function Home() {
     return (
         <main>
             {!user ? (
-                <div>
-                    <h1>Sign In</h1>
+                <div className={styles.card}>
+                    <h1>Sign in with Google</h1>
                     <SignInButton/>
                 </div>
             ) : <Link to="/feed">Access to your feed</Link>}
@@ -39,15 +39,16 @@ const SignInButton = () => {
 
     return (
         <button onClick={signInWithGoogle}>
-            CLICK HERE
+            <img className={styles.signIn} src="google-logo.png" alt="sign in google"/>
         </button>
     )
 }
 
-export const SignOutButton = () => {
+export const SignOutButton = (props) => {
+    console.log(props)
     const history = useHistory();
     return (
-        <button onClick={() => { auth.signOut(); history.push("/") }}>Sign Out</button>
+        <button className={props.className} onClick={async () => { await auth.signOut(); history.push("/") }}>Log out</button>
     )
 }
 

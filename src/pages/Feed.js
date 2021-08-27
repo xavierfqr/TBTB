@@ -1,8 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Link } from 'react-router-dom';
-import { SignOutButton } from './Home';
-import { UserContext } from '../lib/context';
 import { storage, firestore, auth } from '../lib/firebase';
 import Posts from '../components/Posts';
 
@@ -29,9 +26,6 @@ function Feed() {
         await postsQuery.get().then(querySnapshot => {
             const postList = [];
             querySnapshot.forEach(post => {
-                console.log("post", post.data().displayName)
-                console.log("user", user.displayName)
-                console.log(post.data().displayName !== user.displayName);
                 if (post.data().displayName !== user.displayName)
                     postList.push(post.data())
             })
@@ -66,12 +60,7 @@ function Feed() {
 
     return (
         user && <div>
-            Feed !
-            <SignOutButton/>
-            <Link to={{pathname: `profile/${user.displayName}`,
-                        state: {isAdmin: true}}}>
-                <img src={user.photoURL} alt="profile"/>
-            </Link>
+            <h1>Feed !</h1>
             <Posts posts={posts}/>
             <button onClick={loadMore}>Load More</button>
         </div>

@@ -3,6 +3,9 @@ import { RouterConfig } from './navigation/navigation';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from './lib/firebase';
 import { UserContext } from './lib/context';
+import NavBar from './components/Navbar';
+import { BrowserRouter as Router} from "react-router-dom";
+
 
 
 function App() {
@@ -10,10 +13,13 @@ function App() {
 
   return (
     <UserContext.Provider value={{user, username: user ? user.displayName : null}}>
-      <div className="App">
-        <RouterConfig/>
-      </div>
-    </UserContext.Provider>  
+      <Router>
+        <NavBar/>
+        <div className="App">
+          <RouterConfig/>
+        </div>
+      </Router>
+    </UserContext.Provider>
   );
 }
 

@@ -5,7 +5,7 @@ import { storage, firestore, auth } from '../lib/firebase';
 import Loader from '../components/Loader';
 import toast, {Toaster} from 'react-hot-toast';
 import Posts from '../components/Posts';
-
+import './Profile.module.css';
 
 
 const LoadingValues = {

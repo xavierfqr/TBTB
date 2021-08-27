@@ -1,0 +1,45 @@
+nav {
+  height: 80px;
+  background-color: blue;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left {
+  display: flex;
+  cursor: pointer;
+  margin-left: 30px;
+  background-color: transparent;
+  align-items: center;
+}
+
+.img {
+  height: 70px;
+  width: 70px;
+  border-radius: 100%;
+}
+
+.left > .name {
+  margin-left: 20px;
+  color: white;
+  background-color: transparent;
+}
+
+.profilePicture {
+  padding-right: 30px;
+}
+
+.right {
+  display: flex;
+  margin-right: 20px;
+  align-items: center;
+}
+
+.logOut {
+  font-size: 1.5rem;
+  margin-right: 20px;
+  background-color: lightblue;
+  border-radius: 10px;
+  padding: 10px;
+}
